@@ -28,6 +28,10 @@ def topology(remote_controller):
     net.start()
     net.staticArp()
 
+    info("*** Applying switches configurations\n")
+
+    switch1.cmd("ovs-ofctl add-flow {} 'actions=output:NORMAL'".format(switch1.name)
+
     info("*** Running CLI\n")
     CLI(net)
 
