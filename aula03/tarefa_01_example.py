@@ -30,13 +30,13 @@ def topology(remote_controller):
         "staBL101",
         ip="10.0.1.111",
         mac="00:00:00:00:02:21",
-        position="120,90,0",
+        position="120,310,0",
     )
     staBL102 = net.addStation(
         "staBL102",
         ip="10.0.1.112",
         mac="00:00:00:00:02:21",
-        position="60,60,0",
+        position="120,120,0",
     )
     apBL101 = net.addAccessPoint(
         "apBL101",
@@ -45,7 +45,7 @@ def topology(remote_controller):
         ssid="BLOCO1",
         mode="g",
         channel="1",
-        position="110,90,0",
+        position="100,300,0",
     )
     apBL102 = net.addAccessPoint(
         "apBL102",
@@ -54,7 +54,7 @@ def topology(remote_controller):
         ssid="BLOCO1",
         mode="g",
         channel="11",
-        position="50,50,0",
+        position="100,100,0",
     )
 
     switchBL1 = net.addSwitch("switchBL1")
