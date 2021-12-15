@@ -41,10 +41,6 @@ def topology(remote_controller):
     switch1.cmd("ovs-ofctl add-flow {} \"actions=output:NORMAL\"".format(switch1.name))
     switch2.cmd("ovs-ofctl add-flow {} \"actions=output:NORMAL\"".format(switch2.name))
     
-    os.system("rm -f /tmp/zebra-*.pid /tmp/ripd-*.pid logs/*")
-    os.system("mn -c >/dev/null 2>&1")
-    os.system("killall -9 zebra ripd bgpd ospfd > /dev/null 2>&1")
-
     h1r1.cmd("ip route add default via 192.0.2.254")
     h2r2.cmd("ip route add default via 192.0.3.254")
 
@@ -70,6 +66,9 @@ def topology(remote_controller):
 
 
 if __name__ == "__main__":
+    os.system("rm -f /tmp/zebra-*.pid /tmp/ripd-*.pid logs/*")
+    os.system("mn -c >/dev/null 2>&1")
+    os.system("killall -9 zebra ripd bgpd ospfd > /dev/null 2>&1")
     setLogLevel("info")
     remote_controller = False
     topology(remote_controller)
