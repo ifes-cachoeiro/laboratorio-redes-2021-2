@@ -12,7 +12,7 @@ def run_router(router):
         cmd = f"/usr/sbin/{srv} "
         cmd += f"-f /tmp/quagga/{srv}-{name}.conf -d -A 127.0.0.1 "
         cmd += f"-z /tmp/zebra-{name}.api -i /tmp/{srv}-{name}.pid "
-        cmd += f"> logs/{srv}-{name}.log 2>&1"
+        cmd += f"> /tmp/{srv}-{name}-router.log 2>&1"
         router.cmd(cmd)
         time.sleep(1)
     
@@ -72,7 +72,8 @@ def topology(remote_controller):
 
 
 if __name__ == "__main__":
-    os.system("rm -f /tmp/zebra-*.pid /tmp/ripd-*.pid /tmp/ospfd-*.pid /tmp/bgpd-*.pid logs/*")
+    os.system("rm -f /tmp/zebra-*.pid /tmp/ripd-*.pid /tmp/ospfd-*.pid")
+    os.system("rm -f /tmp/bgpd-*.pid /tmp/*-router.log")
     os.system("rm -fr /tmp/zebra-*.api")
     os.system("mn -c >/dev/null 2>&1")
     os.system("killall -9 zebra ripd bgpd ospfd > /dev/null 2>&1")
