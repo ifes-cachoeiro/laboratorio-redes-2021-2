@@ -14,6 +14,7 @@ def topology(remote_controller):
     h2_redeA = net.addHost("h2RedeA", ip="192.168.1.2/24")
     
     roteador1 = net.addHost("roteador1", ip="192.168.1.254/24")
+    roteador2 = net.addHost("roteador2", ip="192.168.2.254/24")
     
     h1_redeB = net.addHost("h1RedeB", ip="192.168.20.1/24")
     h2_redeB = net.addHost("h2RedeB", ip="192.168.20.2/24")
@@ -33,6 +34,7 @@ def topology(remote_controller):
 
     net.addLink(roteador1, switch1, bw=1000)
     net.addLink(roteador1, switch2, bw=1000)
+    net.addLink(roteador1, roteador2, bw=1000)
     info("*** Starting network\n")
     net.start()
     net.staticArp()
