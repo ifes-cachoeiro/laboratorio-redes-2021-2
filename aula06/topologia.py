@@ -5,6 +5,18 @@ from mn_wifi.net import Mininet_wifi
 import time
 import os
 
+def run_router(router):
+    name = router.name
+    services = ["zebra", "ripd"]
+    for srv in services:
+        cmd = f"/usr/sbin/{srv} "
+        cmd += f"-f /tmp/quagga/{srv}-{name}.conf -d -A 127.0.0.1 "
+        cmd += f"-z /tmp/zebra-{name}.api -i /tmp/{srv}-{name}.pid "
+        cmd += f"> logs/{srv}-{name}.log 2>&1"
+        router.cmd(cmd)
+        time.sleep(1)
+    
+
 def topology(remote_controller):
     "Create a network."
     net = Mininet_wifi()
@@ -47,12 +59,8 @@ def topology(remote_controller):
     r1.cmd("ifconfig r1-eth1 10.10.100.1/24 up")
     r2.cmd("ifconfig r2-eth1 10.10.100.2/24 up")
 
-    r1.cmd("/usr/sbin/zebra -f conf/zebra-{n}.conf -d -i /tmp/zebra-{n}.pid > logs/zebra-{n}.log 2>&1".format(n=r1.name))
-    time.sleep(2)
-    r1.cmd("/usr/sbin/ripd -f conf/ripd-{n}.conf -d -i /tmp/ripd-{n}.pid > logs/ripd-{n}.log 2>&1".format(n=r1.name))
-    r2.cmd("/usr/sbin/zebra -f conf/zebra-{n}.conf -d -i /tmp/zebra-{n}.pid > logs/zebra-{n}.log 2>&1".format(n=r2.name))
-    time.sleep(2)
-    r2.cmd("/usr/sbin/ripd -f conf/ripd-{n}.conf -d -i /tmp/ripd-{n}.pid > logs/ripd-{n}.log 2>&1".format(n=r2.name))
+    run_router(r1)
+    run_router(r2)
 
     info("*** Running CLI\n")
 
@@ -63,12 +71,18 @@ def topology(remote_controller):
     os.system("killall -9 zebra ripd bgpd ospfd > /dev/null 2>&1")
 
 
-
-
 if __name__ == "__main__":
-    os.system("rm -f /tmp/zebra-*.pid /tmp/ripd-*.pid logs/*")
+    os.system("rm -f /tmp/zebra-*.pid /tmp/ripd-*.pid /tmp/ospfd-*.pid /tmp/bgpd-*.pid logs/*")
+    os.system("rm -fr /tmp/zebra-*.api")
     os.system("mn -c >/dev/null 2>&1")
     os.system("killall -9 zebra ripd bgpd ospfd > /dev/null 2>&1")
+    os.system("rm -fr /tmp/quagga")
+    os.system("cp -rvf conf/ /tmp/quagga")
+    os.system("chmod 777 /tmp/quagga -R")
+    os.system("echo 'hostname zebra' > /etc/quagga/zebra.conf")
+    os.system("chmod 777 /etc/quagga/zebra.conf")
+    # os.system("systemctl start zebra.service")
+
     setLogLevel("info")
     remote_controller = False
     topology(remote_controller)
