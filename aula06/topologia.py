@@ -25,14 +25,17 @@ def topology(remote_controller):
 
     h1r1 = net.addHost("h1r1", ip="192.0.2.1/24")
     h2r2 = net.addHost("h2r2", ip="192.0.3.1/24")
+    h3r3 = net.addHost("h3r3", ip="192.0.4.1/24")
 
     r1 = net.addHost("r1", ip="192.0.2.254/24")
     r2 = net.addHost("r2", ip="192.0.3.254/24")
+    r3 = net.addHost("r3", ip="10.10.102.2/24")
 
     info("*** Adding Switches (core)\n")
 
     switch1 = net.addSwitch("switch1")
     switch2 = net.addSwitch("switch2")
+    switch3 = net.addSwitch("switch3")
 
     info("*** Creating links\n")
 
@@ -42,7 +45,12 @@ def topology(remote_controller):
     net.addLink(h2r2, switch2, bw=1000)
     net.addLink(r2, switch2, bw=1000)
 
+    net.addLink(h3r3, switch3, bw=1000)
+    net.addLink(r3, switch3, bw=1000)
+
     net.addLink(r1, r2, bw=1000)
+    net.addLink(r1, r3, bw=1000)
+    net.addLink(r2, r3, bw=1000)
 
     info("*** Starting network\n")
     net.start()
@@ -52,15 +60,23 @@ def topology(remote_controller):
 
     switch1.cmd("ovs-ofctl add-flow {} \"actions=output:NORMAL\"".format(switch1.name))
     switch2.cmd("ovs-ofctl add-flow {} \"actions=output:NORMAL\"".format(switch2.name))
+    switch3.cmd("ovs-ofctl add-flow {} \"actions=output:NORMAL\"".format(switch3.name))
     
     h1r1.cmd("ip route add default via 192.0.2.254")
     h2r2.cmd("ip route add default via 192.0.3.254")
+    h3r3.cmd("ip route add default via 192.0.4.254")
 
     r1.cmd("ifconfig r1-eth1 10.10.100.1/24 up")
+    r1.cmd("ifconfig r1-eth2 10.10.102.1/24 up")
     r2.cmd("ifconfig r2-eth1 10.10.100.2/24 up")
+    r2.cmd("ifconfig r2-eth2 10.10.101.1/24 up")
+
+    r3.cmd("ifconfig r3-eth1 10.10.102.2/24 up")
+    r3.cmd("ifconfig r3-eth2 10.10.101.2/24 up")
 
     run_router(r1)
     run_router(r2)
+    run_router(r3)
 
     info("*** Running CLI\n")
 
