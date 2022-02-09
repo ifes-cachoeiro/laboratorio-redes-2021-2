@@ -29,7 +29,7 @@ def topology(remote_controller):
 
     r1 = net.addHost("r1", ip="192.0.2.254/24")
     r2 = net.addHost("r2", ip="192.0.3.254/24")
-    r3 = net.addHost("r3", ip="10.10.102.2/24")
+    r3 = net.addHost("r3", ip="192.0.4.254/24")
 
     info("*** Adding Switches (core)\n")
 
