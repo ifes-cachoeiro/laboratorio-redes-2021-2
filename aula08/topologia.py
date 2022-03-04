@@ -7,7 +7,7 @@ import os
 
 def run_router(router):
     name = router.name
-    services = ["zebra", "ripd"]
+    services = ["zebra", "ospfd"]
     for srv in services:
         cmd = f"/usr/sbin/{srv} "
         cmd += f"-f /tmp/quagga/{srv}-{name}.conf -d -A 127.0.0.1 "
